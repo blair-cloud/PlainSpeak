@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f0">
+  <title>Documentation — PlainSpeak</title>
+  <style>
+    :root { --ink:#19302a;--muted:#66766e;--green:#19785b;--line:#e2e8df;--paper:#fffefa;--soft:#e8f3ed }
+    * { box-sizing:border-box }
+    html { scroll-behavior:smooth;scroll-padding-top:90px }
+    body { margin:0;color:var(--ink);background:#f5f6f0;font:15px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif }
+    a { color:var(--green) }
+    :focus-visible { outline:3px solid #78b895;outline-offset:3px }
+    .skip-link { position:fixed;z-index:30;top:8px;left:8px;padding:9px 12px;background:#20372f;color:#fff;border-radius:8px;transform:translateY(-150%) }
+    .skip-link:focus { transform:translateY(0) }
+    .topbar { position:sticky;top:0;z-index:20;min-height:72px;border-bottom:1px solid #e6ebe3;background:#fffefaf2;backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 max(24px,calc((100vw - 1160px)/2)) }
+    .brand { display:flex;gap:11px;align-items:center;font-weight:780;letter-spacing:-.04em;font-size:18px;text-decoration:none;color:var(--ink) }
+    .mark { display:grid;place-items:center;width:37px;height:37px;border-radius:13px;background:linear-gradient(145deg,#d9efe2,#f4e9d7);color:var(--green);font-size:18px;box-shadow:inset 0 0 0 1px #c6dfd0 }
+    .head-right { display:flex;align-items:center;gap:24px }
+    .navlinks { display:flex;gap:22px;align-items:center;height:72px }
+    .navlinks a { position:relative;text-decoration:none;color:#52665c;font-size:12px;font-weight:650;padding:26px 0 24px }
+    .navlinks a:not(.nav-cta)::after { content:"";position:absolute;bottom:17px;left:0;right:0;height:2px;background:var(--green);transform:scaleX(0);transform-origin:left;transition:transform .15s }
+    .navlinks a:hover,.navlinks a[aria-current="page"] { color:var(--green) }
+    .navlinks a:hover::after,.navlinks a[aria-current="page"]::after { transform:scaleX(1) }
+    .nav-cta { border:1px solid #c8dfd0;color:var(--green)!important;background:#f0f7f1;padding:9px 13px!important;border-radius:9px;white-space:nowrap }
+    main { width:min(960px,calc(100% - 40px));margin:0 auto;padding:50px 0 64px }
+    .doc-hero { max-width:730px;margin-bottom:30px }
+    .eyebrow { display:inline-flex;align-items:center;gap:7px;color:var(--green);font-size:10px;font-weight:780;letter-spacing:.14em;text-transform:uppercase;background:#e8f3ed;border:1px solid #d5e8dc;border-radius:999px;padding:7px 11px }
+    h1 { margin:16px 0 10px;font-size:clamp(36px,6vw,54px);line-height:1.04;letter-spacing:-.06em }
+    .doc-hero p { margin:0;color:var(--muted);font-size:16px;max-width:650px }
+    .doc-layout { display:grid;grid-template-columns:210px minmax(0,1fr);gap:28px;align-items:start }
+    .toc { position:sticky;top:95px;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px }
+    .toc strong { display:block;font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin:0 0 9px }
+    .toc a { display:block;padding:7px 0;color:#66766e;font-size:11px;text-decoration:none;border-top:1px solid #edf0e9 }
+    .toc a:hover { color:var(--green) }
+    .doc-content { display:grid;gap:15px }
+    .doc-card { background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:22px 23px;scroll-margin-top:95px }
+    .doc-card h2 { display:flex;align-items:center;gap:10px;margin:0 0 7px;font-size:18px;letter-spacing:-.03em }
+    .num { flex:0 0 27px;height:27px;display:grid;place-items:center;border-radius:9px;background:var(--soft);color:var(--green);font-size:11px }
+    .doc-card p { margin:7px 0;color:var(--muted);font-size:13px }
+    .doc-card ul { margin:8px 0 0;padding-left:19px;color:var(--muted);font-size:12px }
+    .doc-card li { padding:3px 0 }
+    .codebox { position:relative;margin:11px 0 13px;border:1px solid #253f35;border-radius:11px;background:#20372f;overflow:hidden }
+    .code-head { display:flex;align-items:center;justify-content:space-between;padding:8px 11px;border-bottom:1px solid #ffffff20;color:#c2d2c7;font-size:10px }
+    .copy-code { border:1px solid #ffffff30;border-radius:6px;background:#ffffff0d;color:#edf6ee;padding:5px 8px;font-size:10px;font-weight:700;cursor:pointer }
+    .copy-code:hover { background:#ffffff1b }
+    pre { margin:0;padding:13px 14px;overflow-x:auto;color:#f2f6ef;font:12px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre }
+    .tip { margin:12px 0 0;padding:11px 13px;border:1px solid #d9e9dc;background:#f1f7ef;border-radius:10px;color:#526c59;font-size:11px }
+    .tip strong { color:#284b36 }
+    .warning { border-color:#eee2c5;background:#fff8e8;color:#715e35 }
+    .docs-actions { display:flex;flex-wrap:wrap;gap:10px;margin-top:18px }
+    .button { display:inline-flex;align-items:center;gap:8px;border:1px solid #c8dfd0;border-radius:9px;padding:10px 13px;background:#f0f7f1;color:var(--green);font-size:12px;font-weight:750;text-decoration:none }
+    .button:hover { background:#e2f0e5 }
+    footer { background:#20372f;color:#dce8df;padding:24px max(24px,calc((100vw - 1160px)/2)) }
+    .footer-row { display:flex;align-items:center;justify-content:space-between;gap:18px;color:#b9c9bf;font-size:11px }
+    .footer-row a { color:#eff7ef;text-decoration:none }
+    @media(max-width:760px) { .doc-layout{grid-template-columns:1fr}.toc{position:static;display:grid;grid-template-columns:repeat(2,1fr);gap:0 16px}.toc strong{grid-column:1/-1}.topbar{padding-left:18px;padding-right:18px}.head-right{gap:12px}.navlinks{gap:14px} }
+    @media(max-width:560px) { .topbar{padding:10px 14px;flex-wrap:wrap;gap:2px}.brand{font-size:16px}.mark{width:33px;height:33px}.head-right{width:100%;justify-content:space-between}.navlinks{height:auto;gap:13px}.navlinks a{font-size:11px;padding:7px 0}.navlinks a:not(.nav-cta)::after{bottom:0}.nav-cta{display:none}.doc-layout{gap:14px}main{width:calc(100% - 28px);padding-top:34px}.doc-card{padding:18px}.toc{grid-template-columns:1fr 1fr}.footer-row{align-items:flex-start;flex-direction:column} }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#documentation">Skip to documentation</a>
+  <header class="topbar" id="top">
+    <a class="brand" href="/" aria-label="PlainSpeak home"><span class="mark">Aa</span><span>PlainSpeak</span></a>
+    <div class="head-right">
+      <nav class="navlinks" aria-label="Main navigation"><a href="/#workspace">Workspace</a><a href="/#how-it-works">How it works</a><a href="/docs" aria-current="page">Documentation</a><a class="nav-cta" href="/#workspace">Open workspace <span aria-hidden="true">→</span></a></nav>
+    </div>
+  </header>
+  <main id="documentation">
+    <section class="doc-hero">
+      <div class="eyebrow">PlainSpeak user guide</div>
+      <h1>Get your local model ready.</h1>
+      <p>Follow this guide once to set up Ollama and Gemma on Windows. After that, PlainSpeak can explain sample notices and your own text without sending it to a hosted AI service.</p>
+      <div class="docs-actions"><a class="button" href="/#workspace">← Back to the workspace</a><a class="button" href="#troubleshooting">Troubleshooting ↓</a></div>
+    </section>
+    <div class="doc-layout">
+      <nav class="toc" aria-label="Documentation sections">
+        <strong>On this page</strong>
+        <a href="#requirements">Before you start</a><a href="#install">1. Install Ollama</a><a href="#model">2. Download Gemma</a><a href="#run">3. Run PlainSpeak</a><a href="#try-it">4. Try a document</a><a href="#troubleshooting">Troubleshooting</a><a href="#privacy">Privacy and safety</a>
+      </nav>
+      <div class="doc-content">
+        <section class="doc-card" id="requirements">
+          <h2><span class="num">✓</span>Before you start</h2>
+          <p>PlainSpeak’s current version runs on your Windows computer and uses Ollama for local AI. You’ll need:</p>
+          <ul><li>Python installed on your computer.</li><li>Ollama for Windows.</li><li>An internet connection for the one-time model download.</li></ul>
+        </section>
+        <section class="doc-card" id="install">
+          <h2><span class="num">1</span>Install and open Ollama</h2>
+          <p>Download the installer from the official Ollama site. Open Ollama after installation so its local service is running.</p>
+          <div class="docs-actions"><a class="button" href="https://ollama.com/download/windows" target="_blank" rel="noopener noreferrer">Get Ollama for Windows ↗</a></div>
+          <div class="tip"><strong>Already installed?</strong> Open Ollama from the Start menu, then continue below.</div>
+        </section>
+        <section class="doc-card" id="model">
+          <h2><span class="num">2</span>Download the model</h2>
+          <p>Open PowerShell and download the default model. This can take a while the first time.</p>
+          <div class="codebox"><div class="code-head"><span>PowerShell</span><button class="copy-code" type="button" data-copy="pull">Copy command</button></div><pre><code id="pull">ollama pull gemma3:1b</code></pre></div>
+          <p>Want to use a different Ollama model? Replace <code>gemma3:1b</code> in the PlainSpeak model field with the exact model name you downloaded.</p>
+          <div class="codebox"><div class="code-head"><span>Check downloaded models</span><button class="copy-code" type="button" data-copy="list">Copy command</button></div><pre><code id="list">ollama list</code></pre></div>
+        </section>
+        <section class="doc-card" id="run">
+          <h2><span class="num">3</span>Start PlainSpeak</h2>
+          <p>Open PowerShell in the <code>offline-form-explainer</code> folder. Run the server:</p>
+          <div class="codebox"><div class="code-head"><span>PowerShell · from the project folder</span><button class="copy-code" type="button" data-copy="start">Copy command</button></div><pre><code id="start">python server.py</code></pre></div>
+          <p>Keep that window open, then visit <a href="http://127.0.0.1:8000/">http://127.0.0.1:8000/</a>. The navbar should show the selected model as ready.</p>
+          <div class="codebox"><div class="code-head"><span>Optional: check Ollama’s local model list</span><button class="copy-code" type="button" data-copy="check">Copy command</button></div><pre><code id="check">Invoke-RestMethod http://127.0.0.1:11434/api/tags</code></pre></div>
+        </section>
+        <section class="doc-card" id="try-it">
+          <h2><span class="num">4</span>Try your first document</h2>
+          <ul><li>Choose one of the fictional samples, or paste text from a document.</li><li>Select <strong>Explain this document</strong>.</li><li>Compare every action, date, or amount with its source quote.</li><li>Use <strong>Copy notes</strong> or <strong>Download .txt</strong> to keep the explanation.</li></ul>
+          <div class="tip warning"><strong>Remember:</strong> AI can misunderstand a notice. Verify important details with the organization that issued it.</div>
+        </section>
+        <section class="doc-card" id="troubleshooting">
+          <h2><span class="num">?</span>Troubleshooting</h2>
+          <p><strong>“Model not connected”</strong><br>Open the Ollama app, return to PlainSpeak, then click <strong>Check again</strong> in the model setup panel.</p>
+          <p><strong>PowerShell says “ollama is not recognized”</strong><br>Install Ollama, then close and reopen PowerShell.</p>
+          <p><strong>“Model not downloaded”</strong><br>Run <code>ollama pull gemma3:1b</code>, or pull the exact model name shown in the PlainSpeak model field.</p>
+          <p><strong>The local server won’t start</strong><br>Make sure you’re in the project folder. If port 8000 is already in use, close the earlier PlainSpeak server window before starting it again.</p>
+        </section>
+        <section class="doc-card" id="privacy">
+          <h2><span class="num">◇</span>Privacy and safe use</h2>
+          <p>The document text stays in the page until you click Explain. PlainSpeak then sends it to the app’s local Python server, which calls Ollama on your own computer. PlainSpeak does not save the document. Use sample or non-sensitive text while evaluating, and don’t rely on the explanation as legal, financial, or official advice.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+  <footer><div class="footer-row"><span>PlainSpeak · Local-first document guide</span><a href="/#workspace">Return to the workspace ↑</a></div></footer>
+  <script>
+    document.querySelectorAll('[data-copy]').forEach(button => button.addEventListener('click', async () => {
+      const code = document.getElementById(button.dataset.copy).textContent;
+      try { await navigator.clipboard.writeText(code); button.textContent = 'Copied'; }
+      catch { button.textContent = 'Select and copy'; }
+      setTimeout(() => button.textContent = 'Copy command', 1800);
+    }));
+  </script>
+</body>
+</html>

@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f7f3">
+  <title>PlainSpeak — Understand the paperwork</title>
+  <style>
+    :root { --ink:#19302a; --muted:#66766e; --paper:#fffefa; --line:#e2e8df; --green:#19785b; --soft:#e8f3ed; --amber:#fff6df; --shadow:0 20px 60px #18362a12; --coral:#e99a74; }
+    * { box-sizing:border-box }
+    body { margin:0; color:var(--ink); background:radial-gradient(ellipse at 82% 10%,#e6f2e8 0,transparent 31%),#f5f6f0; font:15px/1.55 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    button, textarea, input { font:inherit }
+    .skip-link { position:fixed;z-index:30;top:8px;left:8px;padding:9px 12px;background:#20372f;color:#fff;border-radius:8px;transform:translateY(-150%);transition:transform .15s }
+    .skip-link:focus { transform:translateY(0) }
+    .topbar { position:sticky;top:0;z-index:20;min-height:72px;border-bottom:1px solid #e6ebe3;background:#fffefaeF;backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 max(24px,calc((100vw - 1160px)/2)); }
+    .brand { display:flex; gap:11px; align-items:center; font-weight:780; letter-spacing:-.04em; font-size:18px;text-decoration:none;color:var(--ink) }
+    .mark { display:grid; place-items:center; width:37px;height:37px;border-radius:13px;background:linear-gradient(145deg,#d9efe2,#f4e9d7);color:var(--green);font-size:18px;box-shadow:inset 0 0 0 1px #c6dfd0 }
+    .head-right { display:flex;align-items:center;gap:24px }
+    .navlinks { display:flex;gap:22px;align-items:center;height:72px }
+    .navlinks a { position:relative;text-decoration:none;color:#52665c;font-size:12px;font-weight:650;padding:26px 0 24px;transition:color .15s }
+    .navlinks a:not(.nav-cta)::after { content:"";position:absolute;bottom:17px;left:0;right:0;height:2px;background:var(--green);transform:scaleX(0);transform-origin:left;transition:transform .15s }
+    .navlinks a:hover,.navlinks a[aria-current="page"] { color:var(--green) }
+    .navlinks a:hover::after,.navlinks a[aria-current="page"]::after { transform:scaleX(1) }
+    .nav-cta { border:1px solid #c8dfd0;color:var(--green)!important;background:#f0f7f1;font-weight:750!important;padding:9px 13px!important;border-radius:9px;white-space:nowrap }
+    .nav-cta:hover { background:#e2f0e5!important }
+    .local { color:var(--muted);display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;padding:8px 11px;border:1px solid #e3e8e0;background:#fffefa;border-radius:999px;white-space:nowrap }
+    .dot { width:8px;height:8px;background:#a4ada7;border-radius:50%;box-shadow:0 0 0 4px #a4ada720 }
+    .local.ready { color:var(--green) }.local.ready .dot { background:#42a779;box-shadow:0 0 0 4px #42a77920 }
+    .local.missing { color:#a26728 }.local.missing .dot { background:#e4a546;box-shadow:0 0 0 4px #e4a54624 }
+    .local { text-decoration:none;transition:background .15s,border-color .15s }
+    .local:hover { border-color:#c7d8ca;background:#f5faf5 }
+    main { width:min(1160px,calc(100% - 40px)); margin:0 auto; padding:52px 0 44px; }
+    .intro { display:grid;grid-template-columns:minmax(0,1.12fr) minmax(300px,.88fr);align-items:center;gap:38px;margin-bottom:37px; }
+    .eyebrow { display:inline-flex;align-items:center;gap:8px;color:var(--green);font-weight:780;text-transform:uppercase;font-size:10px;letter-spacing:.15em;background:#e8f3ed;border:1px solid #d5e8dc;border-radius:999px;padding:7px 11px; }
+    .eyebrow::before { content:"✳";font-size:12px;color:#dc8d69 }
+    h1 { font-size:clamp(38px,5.2vw,61px); line-height:1.02; letter-spacing:-.065em; margin:17px 0 16px;max-width:600px }
+    h1 em { color:var(--green);font-style:normal }
+    .intro p { color:var(--muted); font-size:16px; margin:0; max-width:560px; }
+    .hero-note { position:relative;justify-self:end;width:min(100%,370px);min-height:210px;background:linear-gradient(145deg,#e6f1e7,#f7eedf);border-radius:26px;padding:25px;overflow:hidden; }
+    .hero-note::before,.hero-note::after { content:"";position:absolute;border-radius:50%;pointer-events:none }
+    .hero-note::before { width:210px;height:210px;background:#ffffff55;right:-72px;top:-72px }
+    .hero-note::after { width:130px;height:130px;background:#e2aa8340;left:-65px;bottom:-83px }
+    .hero-note-top { position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;color:#65766d;font-size:10px;font-weight:750;letter-spacing:.11em;text-transform:uppercase }
+    .hero-spark { display:grid;place-items:center;width:31px;height:31px;background:#fffefa;border:1px solid #e1e8dc;border-radius:11px;color:var(--green);font-size:16px }
+    .preview-paper { position:relative;z-index:1;margin:17px 0 0 15px;max-width:270px;background:#fffefa;border:1px solid #e7e8dd;border-radius:13px;padding:15px 16px;box-shadow:0 12px 28px #26412c12;transform:rotate(-2deg) }
+    .preview-label { color:#87928a;font-size:9px;letter-spacing:.11em;text-transform:uppercase;font-weight:750 }
+    .preview-copy { color:#32473c;font-size:13px;line-height:1.45;margin:7px 0 12px;font-weight:600 }
+    .preview-foot { display:flex;gap:6px;align-items:center;color:var(--green);font-size:10px;font-weight:700 }
+    .preview-foot span { display:grid;place-items:center;width:17px;height:17px;background:#e6f3e9;border-radius:6px }
+    .workspace-label { display:flex;align-items:center;gap:10px;margin:0 0 13px;color:#87928a;font-size:10px;text-transform:uppercase;letter-spacing:.15em;font-weight:750 }
+    .workspace-label::after { content:"";height:1px;flex:1;background:#e0e7dd }
+    .workspace { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(360px,.95fr); gap:20px; align-items:start; }
+    .card { background:var(--paper); border:1px solid var(--line); border-radius:19px; box-shadow:var(--shadow); overflow:hidden; }
+    .card-head { display:flex; align-items:center; justify-content:space-between; padding:19px 22px 17px; border-bottom:1px solid #edf0e9;background:linear-gradient(180deg,#fffefa,#fdfdf9) }
+    h2 { font-size:16px; letter-spacing:-.02em; margin:0; }
+    .step { color:#8b9690; font-size:11px; font-weight:700; letter-spacing:.1em; }
+    .input-body { padding:18px 22px 22px; }
+    .sample-line { display:flex; align-items:center; gap:9px; margin:0 0 12px; color:var(--muted); font-size:12px; }
+    select { border:1px solid var(--line); border-radius:8px; padding:7px 30px 7px 10px; background:white; color:var(--ink); font-size:12px; }
+    .file-label { border:1px solid var(--line); border-radius:8px; padding:7px 10px; background:#fff; color:var(--ink); cursor:pointer; font-size:12px; font-weight:600; }
+    .file-label:hover,.subtle:hover { border-color:#9ab9a5;background:#f5faf6 }
+    #file { display:none }
+    .drop-hint { text-align:center; color:#8b9690; font-size:11px; margin:0 0 9px; }
+    .drop-active textarea { border-color:#67ae8e; background:#f8fcf9 }
+    .input-actions { display:flex; gap:9px; align-items:center; margin:8px 1px 16px; }
+    .subtle { border:1px solid var(--line);border-radius:8px;padding:7px 10px;background:#fff;color:#596860;font-size:11px;cursor:pointer;font-weight:600 }
+    .filename { color:#75827b;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap }
+    textarea { width:100%; min-height:294px; resize:vertical; border:1px solid var(--line); border-radius:12px; padding:15px; color:#31403a; background:#fff; outline:none; line-height:1.65; font-size:13px; }
+    textarea:focus, select:focus, input:focus { border-color:#67ae8e; box-shadow:0 0 0 3px #19785b13; }
+    .input-meta { display:flex;justify-content:space-between;align-items:center;color:#8b9690;font-size:11px;margin:8px 1px 16px; }
+    .model-row { display:flex; align-items:center; gap:9px; margin-bottom:15px; color:var(--muted); font-size:12px; }
+    .model-row input { width:145px; border:1px solid var(--line); border-radius:8px; padding:7px 9px; color:var(--ink); background:white; font-size:12px; outline:none; }
+    .model-setup { margin:-4px 0 16px;padding:14px 15px;background:#f5f8f2;border:1px solid #e1e9de;border-radius:12px }
+    .model-setup[hidden] { display:none }
+    .model-setup h3 { margin:0 0 3px;font-size:12px;letter-spacing:-.01em }
+    .model-setup p { margin:0;color:#68786e;font-size:11px;line-height:1.5 }
+    .setup-steps { display:grid;gap:9px;margin:11px 0 0;padding:0;list-style:none }
+    .setup-step { display:flex;align-items:flex-start;gap:9px;color:#50645a;font-size:11px;line-height:1.5 }
+    .setup-num { flex:0 0 19px;height:19px;display:grid;place-items:center;border-radius:7px;background:#e3eee4;color:var(--green);font-size:10px;font-weight:800 }
+    .setup-step a { color:var(--green);font-weight:700 }
+    .setup-command { display:inline-block;margin-top:5px;padding:5px 8px;background:#20372f;color:#f0f6ef;border-radius:6px;font:11px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere }
+    .setup-controls { display:flex;align-items:center;gap:8px;margin:11px 0 0 28px }
+    .setup-controls button { border:1px solid #cbdccf;background:#fff;border-radius:7px;padding:6px 9px;color:var(--green);font-size:10px;font-weight:700;cursor:pointer }
+    .setup-controls button:hover { background:#eaf3eb }
+    .setup-note { margin:9px 0 0 28px!important;color:#89948d!important;font-size:10px!important }
+    .primary { border:0; border-radius:10px; padding:12px 16px; background:var(--green); color:white; font-weight:700; cursor:pointer; width:100%; transition:background .15s, transform .15s; }
+    .primary:hover { background:#12644b; transform:translateY(-1px) }
+    .primary:disabled { opacity:.65; cursor:wait; transform:none }
+    .privacy { display:flex; gap:9px; align-items:flex-start; color:#75827b; font-size:11px; margin:14px 1px 0; }
+    .privacy span:first-child { color:var(--green); font-size:14px; line-height:1.2; }
+    .output { min-height:480px; }
+    .output-inner { padding:22px; }
+    .result-tools { display:none; gap:8px; margin:0 0 14px; justify-content:flex-end; }
+    .empty { display:flex; flex-direction:column; justify-content:center; align-items:flex-start; min-height:400px; padding:12px 14px; }
+    .empty-icon { font-size:30px; width:54px;height:54px;display:grid;place-items:center;background:#eff4e9;border-radius:17px;margin-bottom:18px; }
+    .empty h3 { margin:0 0 7px;font-size:17px;letter-spacing:-.03em }
+    .empty p { color:var(--muted);font-size:13px;margin:0;max-width:285px }
+    .result { display:none }
+    .summary { background:var(--soft); border:1px solid #d7e9de; border-radius:12px; padding:15px 16px; font-size:14px; color:#264538; margin:0 0 20px; }
+    .section { margin:19px 0 0; }
+    .section-title { display:flex;align-items:center;gap:8px;margin:0 0 10px;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#65736d;font-weight:750; }
+    .section-title .icon { font-size:14px; }
+    .item { padding:11px 12px; border:1px solid #e9ede6; background:#fff; border-radius:10px; margin:8px 0; font-size:13px; }
+    .item strong { display:block;font-weight:650;margin-bottom:5px }
+    blockquote { margin:7px 0 0; padding:3px 0 3px 9px; border-left:2px solid #a5cfb8; color:#77847d; font-size:11px; }
+    .notice { background:var(--amber); border:1px solid #f0e4c5; border-radius:10px;padding:12px 13px;color:#69582e;font-size:12px;margin-top:18px; }
+    .warning { display:none; margin:0 0 16px; padding:11px 12px; background:#fff0ed; border:1px solid #f2d6d0; border-radius:10px; color:#994c3d; font-size:12px; }
+    .toast { min-height:17px;color:var(--green);font-size:11px;text-align:right;margin:-7px 0 5px }
+    .fineprint { color:#8b9690;font-size:11px;margin-top:20px;border-top:1px solid #edf0e9;padding-top:14px; }
+    .how { display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:31px 0 0 }
+    .how-card { display:flex;gap:13px;align-items:flex-start;padding:17px 17px 18px;background:#fffefa;border:1px solid var(--line);border-radius:14px }
+    .how-icon { flex:0 0 31px;height:31px;display:grid;place-items:center;border-radius:10px;background:#e8f3ed;color:var(--green);font-size:14px;font-weight:750 }
+    .how-card h3 { margin:0 0 3px;font-size:12px;letter-spacing:-.01em }
+    .how-card p { margin:0;color:var(--muted);font-size:11px;line-height:1.5 }
+    footer { margin-top:12px;background:#20372f;color:#dce8df;padding:35px max(24px,calc((100vw - 1160px)/2)) 22px;scroll-margin-top:90px }
+    .footer-grid { display:grid;grid-template-columns:1.3fr .8fr 1.2fr;gap:38px;padding-bottom:27px }
+    .footer-brand { display:flex;align-items:center;gap:10px;font-weight:750;font-size:15px;letter-spacing:-.02em;text-decoration:none;color:#f3f7f2 }
+    .footer-brand .mark { width:29px;height:29px;border-radius:10px;font-size:14px }
+    .footer-copy { max-width:350px;color:#b9c9bf;font-size:11px;line-height:1.7;margin:12px 0 0 }
+    .footer-heading { margin:2px 0 12px;color:#f3f7f2;font-size:11px;text-transform:uppercase;letter-spacing:.12em;font-weight:750 }
+    .footer-links { display:grid;gap:8px }
+    .footer-links a,.footer-details summary { color:#c7d6cc;text-decoration:none;font-size:11px;cursor:pointer }
+    .footer-links a:hover,.footer-details summary:hover { color:white;text-decoration:underline }
+    .footer-details { margin-top:10px;border-top:1px solid #ffffff20;padding-top:10px }
+    .footer-details p { color:#aebfb4;font-size:10px;line-height:1.6;margin:9px 0 0 }
+    .footer-status { display:inline-flex;align-items:center;gap:7px;margin-top:12px;color:#b9c9bf;font-size:10px }
+    .footer-status .dot { width:7px;height:7px;box-shadow:none;background:#8da397 }
+    .footer-status.ready { color:#ccebd6 }.footer-status.ready .dot { background:#74d398 }
+    .footer-status.missing { color:#f1d09b }.footer-status.missing .dot { background:#e4a546 }
+    .footer-bottom { display:flex;justify-content:space-between;align-items:center;gap:18px;border-top:1px solid #ffffff22;padding-top:15px;color:#a9bbb0;font-size:10px }
+    .footer-bottom a { color:#dce8df;text-decoration:none;padding:6px 0 6px 10px;white-space:nowrap }
+    .footer-bottom a:hover { text-decoration:underline }
+    :focus-visible { outline:3px solid #78b895;outline-offset:3px }
+    @media(max-width:900px) { .head-right{gap:12px}.topbar{padding-left:20px;padding-right:20px}.navlinks{gap:15px}.navlinks a{font-size:11px} }
+    @media(max-width:820px) { main{padding-top:38px}.intro{grid-template-columns:1fr;gap:24px}.hero-note{justify-self:start;width:min(100%,470px);min-height:180px}.workspace{grid-template-columns:1fr}.output{min-height:300px}.empty{min-height:260px}.how{grid-template-columns:1fr}.how-card{padding:15px}.footer-grid{grid-template-columns:1fr 1fr;gap:27px}.footer-column:last-child{grid-column:1/-1} }
+    @media(max-width:600px) { .topbar{padding:10px 15px;min-height:unset;flex-wrap:wrap;gap:4px}.brand{font-size:16px}.mark{width:33px;height:33px}.head-right{width:100%;justify-content:space-between;gap:8px}.navlinks{gap:0}.navlinks a{font-size:11px;padding:8px 9px}.nav-cta{display:none!important}.local{font-size:10px;padding:6px 9px}.footer-grid{grid-template-columns:1fr;gap:24px}.footer-column:last-child{grid-column:auto}.footer-bottom{align-items:flex-start;flex-direction:column;gap:8px}.footer-bottom a{padding:2px 0} }
+    @media(max-width:520px) { main{width:calc(100% - 28px);padding-top:31px}.intro{margin-bottom:28px}h1{font-size:43px}.hero-note{min-height:170px;padding:20px}.input-body,.output-inner{padding:16px}.card-head{padding:16px}.sample-line{flex-wrap:wrap}textarea{min-height:245px} }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#workspace">Skip to the tool</a>
+  <header class="topbar" id="top">
+    <a class="brand" href="#top" aria-label="PlainSpeak home"><span class="mark">Aa</span><span>PlainSpeak</span></a>
+    <div class="head-right">
+      <nav class="navlinks" aria-label="Main navigation"><a href="#workspace" aria-current="page">Workspace</a><a href="#how-it-works">How it works</a><a href="/docs">Documentation</a><a class="nav-cta" href="#workspace">Open workspace <span aria-hidden="true">→</span></a></nav>
+      <a id="connection" class="local" href="#model" aria-label="Local model status. Go to setup instructions."><span class="dot"></span><span id="connectionText">Checking model…</span><span aria-hidden="true">↘</span></a>
+    </div>
+  </header>
+  <main>
+    <section class="intro">
+      <div class="intro-copy">
+        <div class="eyebrow">Paperwork, made clearer</div>
+        <h1>Make the fine print <em>make sense.</em></h1>
+        <p>Turn a notice or form into a clear summary, useful next steps, and the exact words they came from. A little less decoding. A little more peace of mind.</p>
+      </div>
+      <div class="hero-note" aria-label="Example of PlainSpeak checking a document against its source">
+        <div class="hero-note-top"><span>A clearer way through</span><span class="hero-spark">✳</span></div>
+        <div class="preview-paper"><div class="preview-label">Your document, simplified</div><div class="preview-copy">“Please contact the office by Friday.”</div><div class="preview-foot"><span>✓</span> One clear next step</div></div>
+      </div>
+    </section>
+    <div class="workspace-label">Your private paperwork workspace</div>
+    <section class="workspace" id="workspace">
+      <article class="card">
+        <div class="card-head"><h2>Your document</h2><span class="step">01 / INPUT</span></div>
+        <div class="input-body">
+          <div class="sample-line"><label for="sample">Try a sample</label>
+            <select id="sample"><option value="">Choose an example…</option><option value="school">School notice</option><option value="water">Water account notice</option><option value="appointment">Appointment letter</option></select>
+            <label class="file-label" for="file">＋ Open .txt or .md</label><input id="file" type="file" accept=".txt,.md,text/plain,text/markdown">
+          </div>
+          <p class="drop-hint">Or drag a plain-text file here</p>
+          <textarea id="document" maxlength="18000" placeholder="Paste the text from your notice or form here…" aria-label="Document text"></textarea>
+          <div class="input-actions"><button id="clear" class="subtle" type="button">Clear text</button><span id="filename" class="filename"></span></div>
+          <div class="input-meta"><span>Your text stays in this session</span><span id="counter">0 / 18,000</span></div>
+          <div class="model-row"><label for="model">Local model</label><input id="model" value="gemma3:1b" spellcheck="false" aria-label="Ollama model name"><span>via Ollama</span></div>
+          <section id="modelSetup" class="model-setup" aria-live="polite" hidden>
+            <h3 id="modelSetupTitle">Set up your local AI model</h3>
+            <p id="modelSetupMessage">Connect a local model to start explaining documents.</p>
+            <ol class="setup-steps">
+              <li id="installStep" class="setup-step"><span class="setup-num">1</span><span>Install and open <a href="https://ollama.com/download/windows" target="_blank" rel="noopener noreferrer">Ollama for Windows</a>.</span></li>
+              <li class="setup-step"><span id="pullStepNumber" class="setup-num">2</span><span>In PowerShell, run:<br><code id="modelPullCommand" class="setup-command">ollama pull gemma3:1b</code></span></li>
+              <li id="refreshStep" class="setup-step"><span class="setup-num">3</span><span>Come back here and choose “Check again”.</span></li>
+            </ol>
+            <div class="setup-controls"><button id="checkModel" type="button">Check again</button></div>
+            <p class="setup-note">This downloads the model to your computer. The first download needs an internet connection.</p>
+          </section>
+          <button id="explain" class="primary">Explain this document <span aria-hidden="true">→</span></button>
+          <div class="privacy"><span>◉</span><span>Processed by a model running on this computer. PlainSpeak does not save your document. Check important details with the issuing organization.</span></div>
+        </div>
+      </article>
+      <article class="card output">
+        <div class="card-head"><h2>Plain-language guide</h2><span class="step">02 / RESULT</span></div>
+        <div class="output-inner">
+          <div id="warning" class="warning" role="alert"></div>
+          <div id="resultTools" class="result-tools"><button id="copy" class="subtle" type="button">Copy notes</button><button id="download" class="subtle" type="button">Download .txt</button></div>
+          <div id="toast" class="toast" aria-live="polite"></div>
+          <div id="empty" class="empty"><div class="empty-icon">✳</div><h3>Your explanation will appear here</h3><p>We’ll keep the original wording close by, so you can check every detail.</p></div>
+          <div id="result" class="result" aria-live="polite"></div>
+        </div>
+      </article>
+    </section>
+    <section class="how" id="how-it-works" aria-label="How PlainSpeak works">
+      <article class="how-card"><span class="how-icon">01</span><div><h3>Bring your document</h3><p>Paste text, choose a sample, or open a small .txt or .md file.</p></div></article>
+      <article class="how-card"><span class="how-icon">02</span><div><h3>Get the plain version</h3><p>Your local model finds the main point, actions, dates, and amounts.</p></div></article>
+      <article class="how-card"><span class="how-icon">03</span><div><h3>Check the source</h3><p>Supporting quotes help you compare each detail with the original.</p></div></article>
+    </section>
+  </main>
+  <footer id="about">
+    <div class="footer-grid">
+      <section class="footer-column">
+        <a class="footer-brand" href="#top"><span class="mark">Aa</span> PlainSpeak</a>
+        <p class="footer-copy">A calmer way to understand everyday paperwork. Clear notes, with the original wording close by.</p>
+        <div id="footerStatus" class="footer-status"><span class="dot"></span><span id="footerStatusText">Checking local model…</span></div>
+      </section>
+      <nav class="footer-column" aria-label="Footer navigation">
+        <h2 class="footer-heading">Explore</h2>
+        <div class="footer-links"><a href="#workspace">Open the document tool</a><a href="#sample">Choose a sample notice</a><a href="#how-it-works">How it works</a><a href="#top">Back to the top ↑</a></div>
+      </nav>
+      <section class="footer-column" id="privacy-details">
+        <h2 class="footer-heading">Privacy &amp; careful use</h2>
+        <p class="footer-copy">Your document stays in the page until you choose Explain. Then this local app sends it to Ollama running on your computer. PlainSpeak does not save it.</p>
+        <details class="footer-details"><summary>What should I double-check?</summary><p>AI can misread dates, amounts, and instructions. Compare each result with the source and contact the organization that issued the document. PlainSpeak is not legal, financial, or official advice. Use sample or non-sensitive documents while evaluating the app.</p></details>
+      </section>
+    </div>
+    <div class="footer-bottom"><span>PlainSpeak · Made for clearer everyday paperwork.</span><span>Check important details with the issuer.</span></div>
+  </footer>
+  <script>
+    const samples = {
+      school: `NOTICE TO PARENTS AND GUARDIANS\n\nPlease note that the Grade 8 parent information meeting will be held on Thursday, 29 October 2026, at 17:30 in the school hall. Parents should bring the learner's latest report card. If you are unable to attend, please contact the school office by 27 October 2026.\n\nThe meeting is expected to last approximately one hour.`,
+      water: `CUSTOMER NOTICE — ACCOUNT 004821\n\nYour water account shows an outstanding balance of N$486.50. Payment is requested by 15 November 2026. Payments can be made at the municipal cashier or through the listed banking channels. Please include your account number as the payment reference.\n\nIf you have already paid, please allow three working days for the payment to reflect. For account queries, contact Customer Services on 061 123 456.`,
+      appointment: `APPOINTMENT CONFIRMATION\n\nYour appointment is scheduled for 3 November 2026 at 09:00 at the North Clinic, Room 4. Please bring your identity document and this letter. Arrive 15 minutes before your appointment.\n\nIf you cannot attend, call 061 555 010 before 1 November 2026 to reschedule. This appointment confirmation does not state a consultation fee.`,
+    };
+    const $ = (id) => document.getElementById(id);
+    const input = $('document');
+    let latestResult = null;
+    let availableModels = [];
+    let ollamaReachable = false;
+    input.addEventListener('input', () => { $('counter').textContent = `${input.value.length.toLocaleString()} / 18,000`; $('warning').style.display = 'none'; });
+    $('sample').addEventListener('change', (event) => {
+      input.value = samples[event.target.value] || '';
+      $('filename').textContent = event.target.value ? 'Fictional sample loaded' : '';
+      input.dispatchEvent(new Event('input'));
+    });
+    $('clear').addEventListener('click', () => { input.value = ''; $('sample').value = ''; $('filename').textContent = ''; input.dispatchEvent(new Event('input')); input.focus(); });
+    $('file').addEventListener('change', async (event) => {
+      const file = event.target.files?.[0]; if (!file) return;
+      if (!/\.(txt|md)$/i.test(file.name)) { showError('Please choose a plain-text .txt or .md file.'); return; }
+      if (file.size > 18000) { showError('This file is over 18,000 characters. Please choose a smaller file.'); return; }
+      input.value = await file.text(); $('sample').value = ''; $('filename').textContent = file.name; input.dispatchEvent(new Event('input'));
+    });
+    document.addEventListener('dragover', (event) => { if (Array.from(event.dataTransfer?.types || []).includes('Files')) { event.preventDefault(); $('document').closest('.card').classList.add('drop-active'); } });
+    document.addEventListener('dragleave', (event) => { if (!event.relatedTarget) $('document').closest('.card').classList.remove('drop-active'); });
+    document.addEventListener('drop', async (event) => {
+      if (!event.dataTransfer?.files?.length) return;
+      event.preventDefault(); $('document').closest('.card').classList.remove('drop-active');
+      const file = event.dataTransfer.files[0];
+      if (!/\.(txt|md)$/i.test(file.name)) { showError('Please drop a plain-text .txt or .md file.'); return; }
+      if (file.size > 18000) { showError('This file is over 18,000 characters. Please choose a smaller file.'); return; }
+      input.value = await file.text(); $('sample').value = ''; $('file').value = ''; $('filename').textContent = file.name; input.dispatchEvent(new Event('input'));
+    });
+    function showError(message) { $('warning').textContent = message; $('warning').style.display = 'block'; }
+    function updateConnection(data) {
+      ollamaReachable = Boolean(data.reachable);
+      availableModels = data.models || [];
+      const badge = $('connection'); const text = $('connectionText');
+      badge.classList.remove('ready','missing');
+      const chosen = $('model').value.trim();
+      $('modelPullCommand').textContent = `ollama pull ${/^[A-Za-z0-9._:-]{1,80}$/.test(chosen) ? chosen : '<model-name>'}`;
+      const setup = $('modelSetup');
+      if (!data.reachable) {
+        badge.classList.add('missing'); text.textContent = 'Set up local model';
+        $('modelSetupTitle').textContent = 'Set up your local AI model';
+        $('modelSetupMessage').textContent = 'PlainSpeak uses Ollama to run the model on your computer. Set it up once, then come back and check the connection.';
+        $('installStep').hidden = false; $('pullStepNumber').textContent = '2'; $('refreshStep').hidden = false;
+        setup.hidden = false; setFooterStatus('missing','Ollama is not connected'); return;
+      }
+      const found = availableModels.some(name => name === chosen || name.split(':')[0] === chosen);
+      if (found) {
+        badge.classList.add('ready'); text.textContent = `Ready · ${chosen}`; setup.hidden = true; setFooterStatus('ready',`Ready · ${chosen}`);
+      } else {
+        badge.classList.add('missing'); text.textContent = 'Download model';
+        $('modelSetupTitle').textContent = 'One more step: download the model';
+        $('modelSetupMessage').textContent = `Ollama is running. Download “${chosen || 'your selected model'}” and then check again.`;
+        $('installStep').hidden = true; $('pullStepNumber').textContent = '1'; $('refreshStep').hidden = true;
+        setup.hidden = false; setFooterStatus('missing','Ollama is running; model not downloaded');
+      }
+    }
+    function setFooterStatus(state, message) { $('footerStatus').classList.remove('ready','missing'); $('footerStatus').classList.add(state); $('footerStatusText').textContent = message; }
+    async function checkModelStatus() {
+      const button = $('checkModel'); button.disabled = true; button.textContent = 'Checking…';
+      try { const response = await fetch('/api/status', {cache:'no-store'}); if (!response.ok) throw new Error('Status check failed'); updateConnection(await response.json()); }
+      catch { updateConnection({reachable:false,models:[]}); $('modelSetupMessage').textContent = 'Could not check the local model. Make sure PlainSpeak is still running, then try again.'; }
+      finally { button.disabled = false; button.textContent = 'Check again'; }
+    }
+    $('checkModel').addEventListener('click', checkModelStatus);
+    checkModelStatus();
+    $('model').addEventListener('input', () => updateConnection({reachable: ollamaReachable, models: availableModels}));
+    function esc(value) { const node = document.createElement('span'); node.textContent = value || ''; return node.innerHTML; }
+    function evidence(text) { return text ? `<blockquote>“${esc(text)}”</blockquote>` : ''; }
+    function cards(rows, title, icon, primary, secondary) {
+      if (!rows?.length) return '';
+      return `<section class="section"><h3 class="section-title"><span class="icon">${icon}</span>${title}</h3>${rows.map(row => `<div class="item"><strong>${esc(row[primary])}${row[secondary] ? ` — ${esc(row[secondary])}` : ''}</strong>${evidence(row.evidence)}</div>`).join('')}</section>`;
+    }
+    function render(data) {
+      const r = data.result;
+      latestResult = r;
+      const actions = cards(r.actions, 'What it asks you to do', '↗', 'action');
+      const dates = cards(r.dates, 'Dates mentioned', '◷', 'date', 'meaning');
+      const amounts = cards(r.amounts, 'Amounts mentioned', '＄', 'amount', 'meaning');
+      const questions = r.questions?.length ? `<section class="section"><h3 class="section-title"><span class="icon">?</span>Worth clarifying</h3>${r.questions.map(q => `<div class="item">${esc(q)}</div>`).join('')}</section>` : '';
+      $('result').innerHTML = `<div class="summary">${esc(r.summary || 'No summary was returned. Check the original document below.')}</div>${actions}${dates}${amounts}${questions}${r.notice ? `<div class="notice">${esc(r.notice)}</div>` : ''}<p class="fineprint">AI can misunderstand documents. Compare these notes with the original and contact the issuer about anything important or unclear.</p>`;
+      $('empty').style.display = 'none'; $('result').style.display = 'block'; $('resultTools').style.display = 'flex';
+    }
+    function plainNotes() {
+      const r = latestResult; if (!r) return '';
+      const lines = ['PLAIN-SPEAK NOTES', '', 'SUMMARY', r.summary || ''];
+      for (const [title, rows, fields] of [['ACTIONS',r.actions,['action']],['DATES',r.dates,['date','meaning']],['AMOUNTS',r.amounts,['amount','meaning']]]) {
+        if (!rows?.length) continue; lines.push('',title);
+        rows.forEach(row => { lines.push(`• ${fields.map(field => row[field]).filter(Boolean).join(' — ')}`); if (row.evidence) lines.push(`  Source: “${row.evidence}”`); });
+      }
+      if (r.questions?.length) lines.push('', 'QUESTIONS TO CLARIFY', ...r.questions.map(q => `• ${q}`));
+      if (r.notice) lines.push('', 'NOTE', r.notice);
+      lines.push('', 'Check important details against the original document.'); return lines.join('\n');
+    }
+    $('copy').addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(plainNotes()); $('toast').textContent = 'Notes copied'; }
+      catch { const temp = document.createElement('textarea'); temp.value = plainNotes(); document.body.appendChild(temp); temp.select(); document.execCommand('copy'); temp.remove(); $('toast').textContent = 'Notes copied'; }
+      setTimeout(() => $('toast').textContent = '', 2200);
+    });
+    $('download').addEventListener('click', () => {
+      const blob = new Blob([plainNotes()], {type:'text/plain;charset=utf-8'}); const url = URL.createObjectURL(blob); const link = document.createElement('a');
+      link.href = url; link.download = 'plainspeak-notes.txt'; link.click(); URL.revokeObjectURL(url);
+    });
+    $('explain').addEventListener('click', async () => {
+      const documentText = input.value.trim();
+      $('warning').style.display = 'none';
+      if (!documentText) { showError('Paste a document or choose a sample first.'); input.focus(); return; }
+      const button = $('explain'); button.disabled = true; button.textContent = 'Reading on your computer…';
+      try {
+        const response = await fetch('/api/explain', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({document: documentText, model: $('model').value.trim()}) });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Could not explain this document.');
+        render(data);
+      } catch (error) {
+        $('warning').textContent = error.message || 'Something went wrong. Check that Ollama is running on this computer.';
+        $('warning').style.display = 'block';
+      } finally { button.disabled = false; button.innerHTML = 'Explain this document <span aria-hidden="true">→</span>'; }
+    });
+  </script>
+</body>
+</html>
