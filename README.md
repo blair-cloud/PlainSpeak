@@ -23,7 +23,7 @@ If PowerShell says `ollama` is not recognized, close and reopen PowerShell after
 ## Run
 
 ```powershell
-cd path\to\offline-form-explainer
+cd path\to\PlainSpeak
 python server.py
 ```
 
